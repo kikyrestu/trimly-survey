@@ -424,10 +424,10 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-semibold">Tertarik dengan App</p>
+                <p className="text-gray-500 text-sm font-semibold">Mau Coba Trimly</p>
                 <p className="text-4xl font-bold text-gray-800 mt-2">
-                  {stats.interestData?.filter((d: any) => 
-                    d.name === 'Sangat tertarik' || d.name === 'Tertarik'
+                  {stats.willTryTrimlyData?.filter((d: any) => 
+                    d.name === 'Ya, ingin coba' || d.name === 'Mungkin'
                   ).reduce((sum: number, d: any) => sum + d.value, 0) || 0}
                 </p>
               </div>
@@ -438,9 +438,9 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-semibold">Fitur Paling Dibutuhkan</p>
+                <p className="text-gray-500 text-sm font-semibold">Faktor Terpenting</p>
                 <p className="text-lg font-bold text-gray-800 mt-2">
-                  {stats.featuresData?.[0]?.name.substring(0, 25) || 'N/A'}...
+                  {stats.importantFactorsData?.[0]?.name.substring(0, 25) || 'N/A'}...
                 </p>
               </div>
               <BarChart3 className="w-12 h-12 text-blue-500" />
@@ -548,13 +548,13 @@ export default function AdminDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* App Interest */}
+            {/* Interest in Waiting Anywhere */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Minat Menggunakan Aplikasi</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Minat Antre dari Mana Saja</h2>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={stats.interestData}
+                    data={stats.interestWaitData}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
@@ -563,7 +563,7 @@ export default function AdminDashboard() {
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {stats.interestData?.map((_: any, index: number) => (
+                    {stats.interestWaitData?.map((_: any, index: number) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -572,11 +572,11 @@ export default function AdminDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* Needed Features */}
+            {/* Download for Promo */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Fitur yang Paling Dibutuhkan (Top 3 Choices)</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Mau Download Aplikasi Jika Ada Promo</h2>
               <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={stats.featuresData} layout="vertical">
+                <BarChart data={stats.willDownloadData} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" />
                   <YAxis dataKey="name" type="category" width={250} />
@@ -815,11 +815,11 @@ export default function AdminDashboard() {
 
                 {/* App Interest */}
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">Minat Menggunakan Aplikasi Booking</h2>
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Pentingnya Pelanggan Atur Jadwal</h2>
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
-                        data={barberStats.appInterestData}
+                        data={barberStats.scheduleImportanceData}
                         cx="50%"
                         cy="50%"
                         labelLine={false}
@@ -828,7 +828,7 @@ export default function AdminDashboard() {
                         fill="#8884d8"
                         dataKey="value"
                       >
-                        {barberStats.appInterestData?.map((_: any, index: number) => (
+                        {barberStats.scheduleImportanceData?.map((_: any, index: number) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
@@ -837,11 +837,11 @@ export default function AdminDashboard() {
                   </ResponsiveContainer>
                 </div>
 
-                {/* Commission Agreement */}
+                {/* Customers Per Day */}
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">Kesediaan Sistem Komisi</h2>
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Pelanggan Per Hari</h2>
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={barberStats.commissionAgreementData}>
+                    <BarChart data={barberStats.customersPerDayData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
                       <YAxis />
