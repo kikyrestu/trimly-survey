@@ -11,32 +11,78 @@ import {
   BarChart3, PieChart as PieChartIcon 
 } from 'lucide-react';
 
+// Customer Survey V2 Interface
 interface SurveyResponse {
   id: string;
   timestamp: string;
+  // Bagian 1: Profil
   age: string;
   gender: string;
   domicile: string;
+  domicile_other?: string;
   haircut_frequency: string;
-  price_range: string;
-  problems: string[];
-  review_importance: string;
-  app_interest: string;
-  needed_features: string[];
-  booking_fee: string;
-  payment_method: string;
-  willing_to_review: string;
-  barber_selection_importance: string;
-  booking_channel: string;
-  improvement_suggestion?: string;
-  favorite_barbershop?: string;
+  // Bagian 2: Kebiasaan
+  barbershop_choice: string;
+  important_factors: string;
+  when_full: string;
+  // Bagian 3: Pain Awareness (1-5)
+  pain_wa_response: string;
+  pain_time_confusion: string;
+  pain_still_wait: string;
+  pain_queue_overlap: string;
+  pain_barber_forget: string;
+  pain_unknown_barber: string;
+  // Bagian 4: Minat Booking Online
+  interest_wait_anywhere: string;
+  interest_choose_barber: string;
+  interest_queue_time: string;
+  interest_notification: string;
+  // Bagian 5: Promo & Keuntungan
+  promo_types: string;
+  will_download_for_promo: string;
+  want_comparison_app: string;
+  // Bagian 6: Pendapat
+  wa_booking_issue?: string;
+  important_features?: string;
+  will_try_trimly: string;
+}
+
+// Barber Survey V2 Interface
+interface BarberResponse {
+  id: string;
+  timestamp: string;
+  // Bagian 1: Profil Usaha
+  business_name?: string;
+  location: string;
+  location_other?: string;
+  years_operating: string;
+  number_of_barbers: string;
+  customers_per_day: string;
+  // Bagian 2: Sistem Operasional
+  customer_arrival_method: string;
+  common_problems: string;
+  customer_source: string;
+  customer_source_other?: string;
+  // Bagian 3: Solusi Booking Digital
+  interest_no_monthly_fee: string;
+  importance_schedule: string;
+  importance_wait_anywhere: string;
+  importance_queue_app: string;
+  want_auto_notification: string;
+  // Bagian 4: Promosi & Pertumbuhan
+  willing_partnership_promo: string;
+  important_promo_features: string;
+  // Bagian 5: Pendapat
+  biggest_challenge: string;
+  must_have_features: string;
+  willing_try_trimly: string;
 }
 
 const COLORS = ['#f97316', '#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6'];
 
 export default function AdminDashboard() {
   const [responses, setResponses] = useState<SurveyResponse[]>([]);
-  const [barberResponses, setBarberResponses] = useState<any[]>([]);
+  const [barberResponses, setBarberResponses] = useState<BarberResponse[]>([]);
   const [activeTab, setActiveTab] = useState<'customer' | 'barber'>('customer');
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>({});
@@ -99,58 +145,67 @@ export default function AdminDashboard() {
       return;
     }
 
-    console.log(`📈 Calculating stats for ${data.length} customer responses`);
+    console.log(`📈 Calculating stats for ${data.length} customer responses (V2)`);
     console.log('📄 Sample customer data:', data[0]);
 
-    // Age distribution
+    // Bagian 1: Profil
     const ageData = countOccurrences(data, 'age');
-    
-    // Gender distribution
     const genderData = countOccurrences(data, 'gender');
-    
-    // Domicile distribution
     const domicileData = countOccurrences(data, 'domicile');
+    const frequencyData = countOccurrences(data, 'haircut_frequency');
     
-    // Haircut frequency
-    const frequencyData = countOccurrences(data, 'frequency');
+    // Bagian 2: Kebiasaan
+    const barbershopChoiceData = countOccurrences(data, 'barbershop_choice');
+    const importantFactorsData = countMultipleChoices(data, 'important_factors');
+    const whenFullData = countOccurrences(data, 'when_full');
     
-    // Price range
-    const priceData = countOccurrences(data, 'price');
+    // Bagian 3: Pain Awareness (Average scores 1-5)
+    const painScores = {
+      wa_response: calculateAverageScore(data, 'pain_wa_response'),
+      time_confusion: calculateAverageScore(data, 'pain_time_confusion'),
+      still_wait: calculateAverageScore(data, 'pain_still_wait'),
+      queue_overlap: calculateAverageScore(data, 'pain_queue_overlap'),
+      barber_forget: calculateAverageScore(data, 'pain_barber_forget'),
+      unknown_barber: calculateAverageScore(data, 'pain_unknown_barber'),
+    };
     
-    // Problems (multiple choice)
-    const problemsData = countMultipleChoices(data, 'problems');
+    // Bagian 4: Minat Booking Online
+    const interestWaitData = countOccurrences(data, 'interest_wait_anywhere');
+    const interestChooseData = countOccurrences(data, 'interest_choose_barber');
+    const interestQueueData = countOccurrences(data, 'interest_queue_time');
+    const interestNotifData = countOccurrences(data, 'interest_notification');
     
-    // App interest
-    const interestData = countOccurrences(data, 'interest');
+    // Bagian 5: Promo & Keuntungan
+    const promoTypesData = countMultipleChoices(data, 'promo_types');
+    const willDownloadData = countOccurrences(data, 'will_download_for_promo');
+    const wantComparisonData = countOccurrences(data, 'want_comparison_app');
     
-    // Needed features (multiple choice)
-    const featuresData = countMultipleChoices(data, 'features');
-    
-    // Booking fee
-    const bookingFeeData = countOccurrences(data, 'bookingFee');
-    
-    // Payment method
-    const paymentData = countOccurrences(data, 'paymentMethod');
-    
-    // Review importance
-    const reviewData = countOccurrences(data, 'reviewImportance');
-    
-    // Booking channel
-    const channelData = countOccurrences(data, 'channel');
+    // Bagian 6: Pendapat
+    const willTryTrimlyData = countOccurrences(data, 'will_try_trimly');
 
     setStats({
+      // Profil
       ageData,
       genderData,
       domicileData,
       frequencyData,
-      priceData,
-      problemsData,
-      interestData,
-      featuresData,
-      bookingFeeData,
-      paymentData,
-      reviewData,
-      channelData,
+      // Kebiasaan
+      barbershopChoiceData,
+      importantFactorsData,
+      whenFullData,
+      // Pain Awareness
+      painScores,
+      // Minat
+      interestWaitData,
+      interestChooseData,
+      interestQueueData,
+      interestNotifData,
+      // Promo
+      promoTypesData,
+      willDownloadData,
+      wantComparisonData,
+      // Willingness
+      willTryTrimlyData,
     });
   };
 
@@ -168,59 +223,94 @@ export default function AdminDashboard() {
   const countMultipleChoices = (data: any[], field: string) => {
     const counts: { [key: string]: number } = {};
     data.forEach((item) => {
-      const values = item[field] || [];
-      values.forEach((value: string) => {
-        counts[value] = (counts[value] || 0) + 1;
-      });
+      const value = item[field];
+      if (value) {
+        // Handle both comma-separated string and array
+        const values = typeof value === 'string' ? value.split(',').map(v => v.trim()) : value;
+        values.forEach((v: string) => {
+          if (v) counts[v] = (counts[v] || 0) + 1;
+        });
+      }
     });
     return Object.entries(counts)
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
   };
 
-  const calculateBarberStats = (data: any[]) => {
+  const calculateAverageScore = (data: any[], field: string) => {
+    let total = 0;
+    let count = 0;
+    data.forEach((item) => {
+      const value = parseInt(item[field]);
+      if (!isNaN(value)) {
+        total += value;
+        count++;
+      }
+    });
+    return count > 0 ? (total / count).toFixed(2) : '0';
+  };
+
+  const calculateBarberStats = (data: BarberResponse[]) => {
     if (!data || data.length === 0) {
       console.log('⚠️ No barber data to calculate stats');
       return;
     }
 
-    console.log(`📈 Calculating stats for ${data.length} barber responses`);
+    console.log(`📈 Calculating stats for ${data.length} barber responses (V2)`);
     console.log('📄 Sample barber data:', data[0]);
 
+    // Bagian 1: Profil Usaha
     const locationData = countOccurrences(data, 'location');
-    const yearsData = countOccurrences(data, 'yearsOperating');
-    const barbersData = countOccurrences(data, 'numberOfBarbers');
-    const customerMethodData = countMultipleChoices(data, 'customerMethods');
-    const challengesData = countMultipleChoices(data, 'challenges');
-    const customerSourceData = countOccurrences(data, 'customerSource');
-    const appInterestData = countOccurrences(data, 'appInterest');
-    const commissionAgreementData = countOccurrences(data, 'commissionAgreement');
-    const commissionRateData = countOccurrences(data, 'commissionRate');
-    const partnershipData = countOccurrences(data, 'partnership');
-    const featuresData = countMultipleChoices(data, 'features');
-    const notificationData = countOccurrences(data, 'notification');
-    const paymentMethodData = countMultipleChoices(data, 'paymentMethods');
+    const yearsData = countOccurrences(data, 'years_operating');
+    const barbersData = countOccurrences(data, 'number_of_barbers');
+    const customersPerDayData = countOccurrences(data, 'customers_per_day');
+    
+    // Bagian 2: Sistem Operasional
+    const arrivalMethodData = countMultipleChoices(data, 'customer_arrival_method');
+    const problemsData = countMultipleChoices(data, 'common_problems');
+    const customerSourceData = countOccurrences(data, 'customer_source');
+    
+    // Bagian 3: Solusi Booking Digital (KEY METRICS!)
+    const interestNoFeeData = countOccurrences(data, 'interest_no_monthly_fee');
+    const scheduleImportanceData = countOccurrences(data, 'importance_schedule');
+    const waitAnywhereData = countOccurrences(data, 'importance_wait_anywhere');
+    const queueAppData = countOccurrences(data, 'importance_queue_app');
+    const notificationData = countOccurrences(data, 'want_auto_notification');
+    
+    // Bagian 4: Promosi & Pertumbuhan
+    const partnershipData = countOccurrences(data, 'willing_partnership_promo');
+    const promoFeaturesData = countMultipleChoices(data, 'important_promo_features');
+    
+    // Bagian 5: Pendapat
+    const willTryTrimlyData = countOccurrences(data, 'willing_try_trimly');
 
-    console.log('📊 Calculated barber stats:', {
+    console.log('📊 Calculated barber stats (V2):', {
       locationCount: locationData.length,
       yearsCount: yearsData.length,
-      featuresCount: featuresData.length
+      willTryCount: willTryTrimlyData.length
     });
 
     setBarberStats({
+      // Profil
       locationData,
       yearsData,
       barbersData,
-      customerMethodData,
-      challengesData,
+      customersPerDayData,
+      // Operasional
+      arrivalMethodData,
+      problemsData,
       customerSourceData,
-      appInterestData,
-      commissionAgreementData,
-      commissionRateData,
-      partnershipData,
-      featuresData,
+      // Booking Digital (KEY!)
+      interestNoFeeData,
+      scheduleImportanceData,
+      waitAnywhereData,
+      queueAppData,
       notificationData,
-      paymentMethodData,
+      // Promosi
+      partnershipData,
+      promoFeaturesData,
+      // Willingness
+      willTryTrimlyData,
     });
   };
 
