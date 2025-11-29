@@ -40,32 +40,48 @@ export async function GET() {
     console.log('🔍 Fetching customer responses from database...');
     const responses: any = await getCustomerResponses();
     
-    console.log(`📊 Found ${responses.length} customer responses`);
+    console.log(`📊 Found ${responses.length} customer responses (V2)`);
     if (responses.length > 0) {
       console.log('📄 Sample response from DB:', responses[0]);
     }
     
-    // Transform database results to match frontend format
+    // Transform database results to match frontend V2 format
     const transformedResponses = responses.map((row: any) => ({
       id: row.id,
-      name: row.name,
+      timestamp: row.timestamp,
+      // Bagian 1: Profil
       age: row.age,
       gender: row.gender,
       domicile: row.domicile,
-      frequency: row.frequency,
-      price: row.price,
-      problems: row.problems && row.problems.includes(',') ? row.problems.split(', ') : (row.problems ? [row.problems] : []),
-      interest: row.interest,
-      features: row.features && row.features.includes(',') ? row.features.split(', ') : (row.features ? [row.features] : []),
-      bookingFee: row.booking_fee,
-      paymentMethod: row.payment_method,
-      channel: row.channel,
-      reviewImportance: row.review_importance,
-      suggestions: row.suggestions,
-      timestamp: row.timestamp
+      domicile_other: row.domicile_other,
+      haircut_frequency: row.haircut_frequency,
+      // Bagian 2: Kebiasaan
+      barbershop_choice: row.barbershop_choice,
+      important_factors: row.important_factors,
+      when_full: row.when_full,
+      // Bagian 3: Pain Awareness (1-5)
+      pain_wa_response: row.pain_wa_response,
+      pain_time_confusion: row.pain_time_confusion,
+      pain_still_wait: row.pain_still_wait,
+      pain_queue_overlap: row.pain_queue_overlap,
+      pain_barber_forget: row.pain_barber_forget,
+      pain_unknown_barber: row.pain_unknown_barber,
+      // Bagian 4: Minat Booking Online
+      interest_wait_anywhere: row.interest_wait_anywhere,
+      interest_choose_barber: row.interest_choose_barber,
+      interest_queue_time: row.interest_queue_time,
+      interest_notification: row.interest_notification,
+      // Bagian 5: Promo & Keuntungan
+      promo_types: row.promo_types,
+      will_download_for_promo: row.will_download_for_promo,
+      want_comparison_app: row.want_comparison_app,
+      // Bagian 6: Pendapat
+      wa_booking_issue: row.wa_booking_issue,
+      important_features: row.important_features,
+      will_try_trimly: row.will_try_trimly
     }));
     
-    console.log('✅ Transformed responses ready to send');
+    console.log('✅ Transformed responses ready to send (V2 fields)');
     
     return NextResponse.json({
       success: true,

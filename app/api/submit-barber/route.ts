@@ -37,28 +37,46 @@ export async function POST(request: NextRequest) {
 // GET endpoint to fetch all barber responses
 export async function GET() {
   try {
+    console.log('🔍 Fetching barber responses from database...');
     const responses: any = await getBarberResponses();
     
-    // Transform database results to match frontend format
+    console.log(`📊 Found ${responses.length} barber responses (V2)`);
+    if (responses.length > 0) {
+      console.log('📄 Sample barber response from DB:', responses[0]);
+    }
+    
+    // Transform database results to match frontend V2 format
     const transformedResponses = responses.map((row: any) => ({
       id: row.id,
-      businessName: row.business_name,
+      timestamp: row.timestamp,
+      // Bagian 1: Profil Usaha
+      business_name: row.business_name,
       location: row.location,
-      yearsOperating: row.years_operating,
-      numberOfBarbers: row.number_of_barbers,
-      customerMethods: row.customer_methods && row.customer_methods.includes(',') ? row.customer_methods.split(', ') : (row.customer_methods ? [row.customer_methods] : []),
-      challenges: row.challenges && row.challenges.includes(',') ? row.challenges.split(', ') : (row.challenges ? [row.challenges] : []),
-      customerSource: row.customer_source,
-      appInterest: row.app_interest,
-      commissionAgreement: row.commission_agreement,
-      commissionRate: row.commission_rate,
-      partnership: row.partnership,
-      features: row.features && row.features.includes(',') ? row.features.split(', ') : (row.features ? [row.features] : []),
-      notification: row.notification,
-      paymentMethods: row.payment_methods && row.payment_methods.includes(',') ? row.payment_methods.split(', ') : (row.payment_methods ? [row.payment_methods] : []),
-      suggestions: row.suggestions,
-      timestamp: row.timestamp
+      location_other: row.location_other,
+      years_operating: row.years_operating,
+      number_of_barbers: row.number_of_barbers,
+      customers_per_day: row.customers_per_day,
+      // Bagian 2: Sistem Operasional
+      customer_arrival_method: row.customer_arrival_method,
+      common_problems: row.common_problems,
+      customer_source: row.customer_source,
+      customer_source_other: row.customer_source_other,
+      // Bagian 3: Solusi Booking Digital
+      interest_no_monthly_fee: row.interest_no_monthly_fee,
+      importance_schedule: row.importance_schedule,
+      importance_wait_anywhere: row.importance_wait_anywhere,
+      importance_queue_app: row.importance_queue_app,
+      want_auto_notification: row.want_auto_notification,
+      // Bagian 4: Promosi & Pertumbuhan
+      willing_partnership_promo: row.willing_partnership_promo,
+      important_promo_features: row.important_promo_features,
+      // Bagian 5: Pendapat
+      biggest_challenge: row.biggest_challenge,
+      must_have_features: row.must_have_features,
+      willing_try_trimly: row.willing_try_trimly
     }));
+    
+    console.log('✅ Transformed barber responses ready (V2 fields)');
     
     return NextResponse.json({
       success: true,
