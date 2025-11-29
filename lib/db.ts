@@ -98,23 +98,26 @@ export async function insertBarberResponse(data: any) {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
   
+  // Map frontend field names to database columns
   const params = [
-    data.businessName || null,
-    data.location || null,
-    data.yearsOperating || null,
-    data.numberOfBarbers || null,
-    Array.isArray(data.customerMethods) ? data.customerMethods.join(', ') : (data.customerMethods || null),
+    data.business_name || null,
+    data.location || data.locationOther || null,
+    data.years_operating || null,
+    data.number_of_barbers || null,
+    Array.isArray(data.customer_method) ? data.customer_method.join(', ') : (data.customer_method || null),
     Array.isArray(data.challenges) ? data.challenges.join(', ') : (data.challenges || null),
-    data.customerSource || null,
-    data.appInterest || null,
-    data.commissionAgreement || null,
-    data.commissionRate || null,
-    data.partnership || null,
-    Array.isArray(data.features) ? data.features.join(', ') : (data.features || null),
-    data.notification || null,
-    Array.isArray(data.paymentMethods) ? data.paymentMethods.join(', ') : (data.paymentMethods || null),
-    data.suggestions || null
+    data.customer_source || null,
+    data.app_interest || null,
+    data.commission_agreement || null,
+    data.commission_rate || null,
+    data.partnership_willingness || null,
+    Array.isArray(data.important_features) ? data.important_features.join(', ') : (data.important_features || null),
+    data.notification_need || null,
+    Array.isArray(data.payment_method) ? data.payment_method.join(', ') : (data.payment_method || null),
+    data.expectations || data.concerns || null
   ];
+  
+  console.log('💾 Saving barber survey to DB with params:', params);
   
   return await query(sql, params);
 }

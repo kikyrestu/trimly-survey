@@ -4,11 +4,14 @@ import { insertBarberResponse, getBarberResponses } from '@/lib/db';
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
+    
+    console.log('📥 Received barber survey data:', JSON.stringify(data, null, 2));
 
     // Save to MySQL database
     const result = await insertBarberResponse(data);
     
     console.log(`✅ Barber survey saved to MySQL database!`);
+    console.log('📊 Insert result:', result);
 
     return NextResponse.json(
       { 
