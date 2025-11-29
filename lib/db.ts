@@ -114,36 +114,52 @@ export async function getBarberResponses() {
   return await query(sql);
 }
 
-// Insert barber response
+// Insert barber response (V2 - Redesigned Survey)
 export async function insertBarberResponse(data: any) {
   const sql = `
     INSERT INTO barber_responses 
-    (business_name, location, years_operating, number_of_barbers, customer_methods, 
-     challenges, customer_source, app_interest, commission_agreement, commission_rate, 
-     partnership, features, notification, payment_methods, suggestions)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (business_name, location, location_other, years_operating, number_of_barbers, customers_per_day,
+     customer_arrival_method, common_problems, customer_source, customer_source_other,
+     interest_no_monthly_fee, importance_schedule, importance_wait_anywhere, importance_queue_app, want_auto_notification,
+     willing_partnership_promo, important_promo_features,
+     biggest_challenge, must_have_features, willing_try_trimly)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
   
   // Map frontend field names to database columns
   const params = [
+    // Bagian 1: Profil Usaha
     data.business_name || null,
-    data.location || data.locationOther || null,
+    data.location || null,
+    data.locationOther || null,
     data.years_operating || null,
     data.number_of_barbers || null,
-    Array.isArray(data.customer_method) ? data.customer_method.join(', ') : (data.customer_method || null),
-    Array.isArray(data.challenges) ? data.challenges.join(', ') : (data.challenges || null),
+    data.customers_per_day || null,
+    
+    // Bagian 2: Sistem Operasional & Masalah Umum
+    Array.isArray(data.customer_arrival_method) ? data.customer_arrival_method.join(', ') : (data.customer_arrival_method || null),
+    Array.isArray(data.common_problems) ? data.common_problems.join(', ') : (data.common_problems || null),
     data.customer_source || null,
-    data.app_interest || null,
-    data.commission_agreement || null,
-    data.commission_rate || null,
-    data.partnership_willingness || null,
-    Array.isArray(data.important_features) ? data.important_features.join(', ') : (data.important_features || null),
-    data.notification_need || null,
-    Array.isArray(data.payment_method) ? data.payment_method.join(', ') : (data.payment_method || null),
-    data.expectations || data.concerns || null
+    data.customerSourceOther || null,
+    
+    // Bagian 3: Solusi Booking Digital
+    data.interest_no_monthly_fee || null,
+    data.importance_schedule || null,
+    data.importance_wait_anywhere || null,
+    data.importance_queue_app || null,
+    data.want_auto_notification || null,
+    
+    // Bagian 4: Promosi & Pertumbuhan Usaha
+    data.willing_partnership_promo || null,
+    Array.isArray(data.important_promo_features) ? data.important_promo_features.join(', ') : (data.important_promo_features || null),
+    
+    // Bagian 5: Pendapat Usaha
+    data.biggest_challenge || null,
+    data.must_have_features || null,
+    data.willing_try_trimly || null
   ];
   
-  console.log('💾 Saving barber survey to DB with params:', params);
+  console.log('💾 Saving barber survey V2 to DB with params:', params);
   
   return await query(sql, params);
 }
