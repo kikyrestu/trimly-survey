@@ -5,64 +5,57 @@ import { Scissors, Briefcase } from 'lucide-react';
 
 export default function BarberSurvey() {
   const [formData, setFormData] = useState({
-    // Bagian 1
     business_name: '',
     location: '',
     locationOther: '',
     years_operating: '',
     number_of_barbers: '',
-    
-    // Bagian 2
-    customer_method: '',
-    challenges: [] as string[],
-    challengesOther: '',
+    customers_per_day: '',
+    customer_arrival_method: [] as string[],
+    common_problems: [] as string[],
     customer_source: '',
-    
-    // Bagian 3
-    app_interest: '',
-    commission_agreement: '',
-    commission_rate: '',
-    partnership_willingness: '',
-    
-    // Bagian 4
-    important_features: [] as string[],
-    notification_need: '',
-    payment_method: '',
-    
-    // Bagian 5
-    expectations: '',
-    concerns: '',
+    customerSourceOther: '',
+    interest_no_monthly_fee: '',
+    importance_schedule: '',
+    importance_wait_anywhere: '',
+    importance_queue_app: '',
+    want_auto_notification: '',
+    willing_partnership_promo: '',
+    important_promo_features: [] as string[],
+    biggest_challenge: '',
+    must_have_features: '',
+    willing_try_trimly: '',
   });
 
   const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (name: string, value: string) => {
+  const handleCheckboxChange = (name: string, value: string, maxSelect?: number) => {
     setFormData(prev => {
       const currentValues = prev[name as keyof typeof prev] as string[];
-      const newValues = currentValues.includes(value)
-        ? currentValues.filter(v => v !== value)
-        : [...currentValues, value];
-      return { ...prev, [name]: newValues };
+      if (currentValues.includes(value)) {
+        return { ...prev, [name]: currentValues.filter(v => v !== value) };
+      } else {
+        if (maxSelect && currentValues.length >= maxSelect) {
+          return prev;
+        }
+        return { ...prev, [name]: [...currentValues, value] };
+      }
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
       const response = await fetch('/api/submit-barber', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       if (response.ok) {
         setSubmitted(true);
       } else {
@@ -85,23 +78,24 @@ export default function BarberSurvey() {
           </div>
           <h2 className="text-3xl font-bold text-gray-800 mb-4">Terima Kasih! 🎉</h2>
           <p className="text-gray-600 mb-6">
-            Data Anda telah berhasil tersimpan. Kontribusi Anda sangat membantu pengembangan Trimly!
-            Semoga usaha Anda makin ramai & modern! 💈🚀
+            Terima kasih banyak! Semoga barbershop Anda makin rame, jadwal makin rapi, promosi makin mudah 🚀💈
           </p>
           <button
             onClick={() => {
               setSubmitted(false);
               setFormData({
                 business_name: '', location: '', locationOther: '', years_operating: '',
-                number_of_barbers: '', customer_method: '', challenges: [], challengesOther: '',
-                customer_source: '', app_interest: '', commission_agreement: '',
-                commission_rate: '', partnership_willingness: '', important_features: [],
-                notification_need: '', payment_method: '', expectations: '', concerns: '',
+                number_of_barbers: '', customers_per_day: '', customer_arrival_method: [],
+                common_problems: [], customer_source: '', customerSourceOther: '',
+                interest_no_monthly_fee: '', importance_schedule: '', importance_wait_anywhere: '',
+                importance_queue_app: '', want_auto_notification: '', willing_partnership_promo: '',
+                important_promo_features: [], biggest_challenge: '', must_have_features: '',
+                willing_try_trimly: '',
               });
             }}
-            className="bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg"
           >
-            Isi Lagi
+            Isi Survey Lagi
           </button>
         </div>
       </div>
@@ -110,514 +104,331 @@ export default function BarberSurvey() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8 text-center border-t-8 border-blue-500">
-          <div className="flex justify-center mb-4">
-            <div className="bg-blue-500 p-4 rounded-full">
-              <Briefcase className="w-12 h-12 text-white" />
-            </div>
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-8">
+          <div className="inline-block p-4 bg-white rounded-full shadow-xl mb-4">
+            <Briefcase className="h-12 w-12 text-blue-600" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            Survey Minat dan Kebutuhan Barbershop/Salon
-          </h1>
-          <p className="text-lg text-gray-700 mb-2 font-semibold">
-            Sistem Booking Berbasis Komisi – Trimly
-          </p>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Survei ini bertujuan untuk memahami kebutuhan barbershop/salon dalam penggunaan sistem 
-            booking online berbasis komisi <strong>tanpa biaya bulanan</strong>. Data digunakan untuk 
-            riset pengembangan startup Trimly. Terima kasih telah berpartisipasi! 💈✨
+          <h1 className="text-4xl font-bold text-white mb-2">Survey Kebutuhan Barbershop</h1>
+          <p className="text-blue-200 text-lg">Layanan Booking Digital – Trimly</p>
+          <p className="text-blue-100 mt-4 max-w-2xl mx-auto">
+            Formulir ini dibuat untuk riset kuliah mengenai kebutuhan barbershop dalam mengatur booking pelanggan dan promosi usaha secara digital. 
+            Semua jawaban bersifat rahasia dan hanya untuk penelitian akademik. Terima kasih atas partisipasi Anda! 🙌
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Bagian 1 - Profil Usaha */}
-          <section className="bg-white rounded-2xl shadow-xl p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b-2 border-blue-500 flex items-center gap-2">
-              <Scissors className="w-6 h-6 text-blue-500" />
-              Bagian 1 — Profil Usaha
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-2xl p-8 space-y-8">
+          
+          <div className="border-b pb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <span className="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+              Profil Usaha
             </h2>
 
-            {/* Nama Barbershop */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                1. Nama Barbershop/Salon <span className="text-gray-500 text-sm font-normal">(opsional)</span>
-              </label>
-              <input
-                type="text"
-                name="business_name"
-                value={formData.business_name}
-                onChange={handleChange}
-                placeholder="Nama usaha Anda..."
-                className="w-full border-2 border-gray-300 rounded-lg p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
-              />
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">1. Nama barbershop/salon (opsional)</label>
+              <input type="text" name="business_name" value={formData.business_name} onChange={handleChange}
+                placeholder="Nama barbershop Anda"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
             </div>
 
-            {/* Lokasi Usaha */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                2. Lokasi Usaha <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {['Banyuwangi', 'Bali', 'Surabaya', 'Malang'].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="location"
-                      value={option}
-                      checked={formData.location === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">2. Lokasi usaha <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Banyuwangi', 'Bali', 'Surabaya', 'Malang'].map((loc) => (
+                  <label key={loc} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="location" value={loc} checked={formData.location === loc} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{loc}</span>
                   </label>
                 ))}
-                <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                  <input
-                    type="radio"
-                    name="location"
-                    value="Lainnya"
-                    checked={formData.location === 'Lainnya'}
-                    onChange={handleChange}
-                    required
-                    className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                  />
-                  <span className="ml-3 text-gray-700">Kota lain:</span>
-                  <input
-                    type="text"
-                    name="locationOther"
-                    value={formData.locationOther}
-                    onChange={handleChange}
-                    placeholder="Sebutkan kota"
-                    className="ml-3 flex-1 border-b-2 border-gray-300 focus:border-blue-500 outline-none px-2 py-1"
-                    disabled={formData.location !== 'Lainnya'}
-                  />
+                <label className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                  <input type="radio" name="location" value="Lainnya" checked={formData.location === 'Lainnya'} onChange={handleChange} required
+                    className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                  <span className="text-gray-700">Kota lain (isi sendiri)</span>
                 </label>
               </div>
+              {formData.location === 'Lainnya' && (
+                <input type="text" name="locationOther" value={formData.locationOther} onChange={handleChange}
+                  placeholder="Sebutkan kota..." required
+                  className="mt-3 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+              )}
             </div>
 
-            {/* Lama Usaha */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                3. Lama Usaha Beroperasi <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {['< 1 tahun', '1–3 tahun', '3–5 tahun', '> 5 tahun'].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="years_operating"
-                      value={option}
-                      checked={formData.years_operating === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">3. Lama usaha beroperasi <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['< 1 tahun', '1–3 tahun', '3–5 tahun', '> 5 tahun'].map((years) => (
+                  <label key={years} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="years_operating" value={years} checked={formData.years_operating === years} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{years}</span>
                   </label>
                 ))}
               </div>
             </div>
 
-            {/* Jumlah Barber */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                4. Jumlah Barber/Stylist Aktif <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {['1 orang', '2 orang', '3 orang', '> 3 orang'].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="number_of_barbers"
-                      value={option}
-                      checked={formData.number_of_barbers === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Bagian 2 - Operasional & Tantangan */}
-          <section className="bg-white rounded-2xl shadow-xl p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b-2 border-blue-500">
-              Bagian 2 — Operasional & Tantangan
-            </h2>
-
-            {/* Metode Kedatangan */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                5. Bagaimana metode kedatangan pelanggan saat ini? <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {[
-                  'Walk-in (datang langsung)',
-                  'Booking WhatsApp/DM',
-                  'Sistem antrean manual',
-                  'Aplikasi khusus (sebutkan)'
-                ].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="customer_method"
-                      value={option}
-                      checked={formData.customer_method === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">4. Jumlah barber/stylist aktif <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['1 orang', '2 orang', '3 orang', '> 3 orang'].map((count) => (
+                  <label key={count} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="number_of_barbers" value={count} checked={formData.number_of_barbers === count} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{count}</span>
                   </label>
                 ))}
               </div>
             </div>
 
-            {/* Kendala */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                6. Kendala apa saja yang sering terjadi? <span className="text-red-500">*</span>
-                <span className="block text-sm font-normal text-gray-500 mt-1">(pilih semua yang sesuai)</span>
-              </label>
-              <div className="space-y-3">
-                {[
-                  'Pelanggan menunggu terlalu lama',
-                  'Kursi kosong di jam tertentu',
-                  'Pelanggan batal mendadak',
-                  'Promosi kurang efektif',
-                  'Sulit mendapatkan pelanggan baru'
-                ].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.challenges.includes(option)}
-                      onChange={() => handleCheckboxChange('challenges', option)}
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500 rounded"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
-                  </label>
-                ))}
-                <div className="flex items-start p-4 border-2 border-gray-200 rounded-lg">
-                  <input
-                    type="checkbox"
-                    checked={formData.challenges.includes('Lainnya')}
-                    onChange={() => handleCheckboxChange('challenges', 'Lainnya')}
-                    className="w-5 h-5 text-blue-500 focus:ring-blue-500 rounded mt-1"
-                  />
-                  <div className="ml-3 flex-1">
-                    <span className="text-gray-700">Lainnya:</span>
-                    <input
-                      type="text"
-                      name="challengesOther"
-                      value={formData.challengesOther}
-                      onChange={handleChange}
-                      placeholder="Sebutkan kendala lain..."
-                      className="w-full mt-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none px-2 py-1"
-                      disabled={!formData.challenges.includes('Lainnya')}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Sumber Pelanggan */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                7. Sumber pelanggan terbanyak datang dari: <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {[
-                  'Walk-in / lewat jalan',
-                  'Pelanggan tetap',
-                  'Sosial media',
-                  'Rekomendasi teman',
-                  'Lainnya'
-                ].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="customer_source"
-                      value={option}
-                      checked={formData.customer_source === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">5. Rata-rata pelanggan per hari <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['< 10', '10–20', '21–40', '> 40'].map((count) => (
+                  <label key={count} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="customers_per_day" value={count} checked={formData.customers_per_day === count} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{count}</span>
                   </label>
                 ))}
               </div>
             </div>
-          </section>
-
-          {/* Bagian 3 - Minat terhadap Aplikasi */}
-          <section className="bg-white rounded-2xl shadow-xl p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b-2 border-blue-500">
-              Bagian 3 — Minat terhadap Aplikasi Booking Komisi
-            </h2>
-
-            {/* Minat Aplikasi */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                8. Jika ada aplikasi booking yang membantu mendatangkan pelanggan baru tanpa biaya bulanan, apakah Anda tertarik? <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {['Sangat tertarik', 'Tertarik', 'Ragu', 'Tidak tertarik'].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="app_interest"
-                      value={option}
-                      checked={formData.app_interest === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Setuju Komisi */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                9. Seberapa setuju dengan pernyataan ini: <span className="text-red-500">*</span>
-                <span className="block text-base font-normal text-gray-600 mt-2 italic">
-                  "Saya bersedia membayar komisi hanya jika pelanggan datang melalui aplikasi."
-                </span>
-              </label>
-              <div className="space-y-3">
-                {['Sangat setuju', 'Setuju', 'Kurang setuju', 'Tidak setuju'].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="commission_agreement"
-                      value={option}
-                      checked={formData.commission_agreement === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Rate Komisi */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                10. Komisi yang menurut Anda masih masuk akal: <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {['5%', '10%', '15%', '> 15%', 'Tidak mau ada komisi'].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="commission_rate"
-                      value={option}
-                      checked={formData.commission_rate === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Kesediaan Kerja Sama */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                11. Jika aplikasi bisa meningkatkan pelanggan 20–50% per bulan, apakah Anda mau bekerja sama? <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {['Ya', 'Mungkin', 'Tidak'].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="partnership_willingness"
-                      value={option}
-                      checked={formData.partnership_willingness === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Bagian 4 - Kebutuhan Fitur */}
-          <section className="bg-white rounded-2xl shadow-xl p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b-2 border-blue-500">
-              Bagian 4 — Kebutuhan Fitur
-            </h2>
-
-            {/* Fitur Penting */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                12. Fitur apa yang paling penting untuk usaha Anda? <span className="text-red-500">*</span>
-                <span className="block text-sm font-normal text-gray-500 mt-1">(maksimal 3 pilihan)</span>
-              </label>
-              <div className="space-y-3">
-                {[
-                  'Booking otomatis (tanpa antre)',
-                  'Manajemen jadwal barber',
-                  'Rating & review untuk tingkatkan reputasi',
-                  'Profil barber & portofolio',
-                  'Statistik pendapatan/usaha',
-                  'Promo/penawaran khusus',
-                  'Verifikasi pelanggan'
-                ].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.important_features.includes(option)}
-                      onChange={() => {
-                        if (formData.important_features.includes(option)) {
-                          handleCheckboxChange('important_features', option);
-                        } else if (formData.important_features.length < 3) {
-                          handleCheckboxChange('important_features', option);
-                        }
-                      }}
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500 rounded"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-              <p className="text-sm text-gray-500 mt-2">
-                Terpilih: {formData.important_features.length}/3
-              </p>
-            </div>
-
-            {/* Notifikasi */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                13. Apakah Anda butuh notifikasi pelanggan sebelum jadwal agar mengurangi pembatalan? <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {['Ya', 'Mungkin', 'Tidak'].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="notification_need"
-                      value={option}
-                      checked={formData.notification_need === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Metode Pembayaran Komisi */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                14. Metode pembayaran paling nyaman untuk komisi: <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {[
-                  'Pemotongan otomatis setelah transaksi',
-                  'Transfer per minggu',
-                  'Transfer per bulan',
-                  'Lainnya'
-                ].map((option) => (
-                  <label key={option} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer">
-                    <input
-                      type="radio"
-                      name="payment_method"
-                      value={option}
-                      checked={formData.payment_method === option}
-                      onChange={handleChange}
-                      required
-                      className="w-5 h-5 text-blue-500 focus:ring-blue-500"
-                    />
-                    <span className="ml-3 text-gray-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Bagian 5 - Pendapat & Insight */}
-          <section className="bg-white rounded-2xl shadow-xl p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b-2 border-blue-500">
-              Bagian 5 — Pendapat & Insight Usaha
-            </h2>
-
-            {/* Harapan */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                15. Apa harapan Anda jika memakai aplikasi booking seperti Trimly?
-              </label>
-              <textarea
-                name="expectations"
-                value={formData.expectations}
-                onChange={handleChange}
-                rows={4}
-                placeholder="Tuliskan harapan Anda di sini..."
-                className="w-full border-2 border-gray-300 rounded-lg p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
-              />
-            </div>
-
-            {/* Concerns */}
-            <div className="mb-8">
-              <label className="block text-lg font-semibold text-gray-700 mb-4">
-                16. Hal apa yang bisa membuat Anda tidak ingin memakai aplikasi booking?
-              </label>
-              <textarea
-                name="concerns"
-                value={formData.concerns}
-                onChange={handleChange}
-                rows={4}
-                placeholder="Tuliskan kekhawatiran Anda di sini..."
-                className="w-full border-2 border-gray-300 rounded-lg p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
-              />
-            </div>
-          </section>
-
-          {/* Submit Button */}
-          <div className="bg-white rounded-2xl shadow-xl p-8">
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xl font-bold py-4 px-6 rounded-lg hover:from-blue-600 hover:to-blue-700 transform hover:scale-[1.02] transition-all shadow-lg"
-            >
-              Kirim Jawaban
-            </button>
-            <p className="text-center text-gray-500 text-sm mt-4">
-              * Wajib diisi
-            </p>
           </div>
+
+          <div className="border-b pb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <span className="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+              Sistem Operasional & Masalah Umum
+            </h2>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">6. Cara kedatangan pelanggan saat ini? (boleh pilih lebih dari 1) <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Walk-in (datang langsung)', 'Booking lewat WhatsApp/DM', 'Sistem antrean manual', 'Sudah pakai aplikasi khusus'].map((method) => (
+                  <label key={method} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="checkbox" checked={formData.customer_arrival_method.includes(method)}
+                      onChange={() => handleCheckboxChange('customer_arrival_method', method)}
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500 rounded" />
+                    <span className="text-gray-700">{method}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">7. Masalah yang sering terjadi? (boleh pilih lebih dari 1) <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Penumpukan pelanggan di jam tertentu', 'Jadwal barber sering bentrok', 'Pelanggan batal mendadak', 
+                  'Promosi kurang efektif', 'Barbershop kurang dikenal orang luas', 'Sulit dapat pelanggan baru', 'Tidak ada masalah'].map((problem) => (
+                  <label key={problem} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="checkbox" checked={formData.common_problems.includes(problem)}
+                      onChange={() => handleCheckboxChange('common_problems', problem)}
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500 rounded" />
+                    <span className="text-gray-700">{problem}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">8. Sumber pelanggan terbanyak dari: <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Pelanggan tetap', 'Walk-in / lewat jalan', 'Sosial media', 'Rekomendasi'].map((source) => (
+                  <label key={source} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="customer_source" value={source} checked={formData.customer_source === source} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{source}</span>
+                  </label>
+                ))}
+                <label className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                  <input type="radio" name="customer_source" value="Lainnya" checked={formData.customer_source === 'Lainnya'} onChange={handleChange} required
+                    className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                  <span className="text-gray-700">Lainnya</span>
+                </label>
+              </div>
+              {formData.customer_source === 'Lainnya' && (
+                <input type="text" name="customerSourceOther" value={formData.customerSourceOther} onChange={handleChange}
+                  placeholder="Sebutkan sumber lainnya..." required
+                  className="mt-3 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+              )}
+            </div>
+          </div>
+
+          <div className="border-b pb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <span className="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+              Solusi Booking Digital
+            </h2>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">9. Kalau ada aplikasi yang bantu mendatangkan pelanggan baru TANPA biaya pendaftaran/bulanan, apakah tertarik? <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Sangat tidak tertarik', 'Tidak tertarik', 'Netral', 'Tertarik', 'Sangat tertarik'].map((level) => (
+                  <label key={level} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="interest_no_monthly_fee" value={level} checked={formData.interest_no_monthly_fee === level} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{level}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">10. Seberapa penting pelanggan bisa atur jadwal sendiri? <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Tidak penting', 'Kurang penting', 'Cukup penting', 'Penting', 'Sangat penting'].map((level) => (
+                  <label key={level} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="importance_schedule" value={level} checked={formData.importance_schedule === level} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{level}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">11. Seberapa penting pelanggan bisa antre dari mana saja? <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Tidak penting', 'Kurang penting', 'Cukup penting', 'Penting', 'Sangat penting'].map((level) => (
+                  <label key={level} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="importance_wait_anywhere" value={level} checked={formData.importance_wait_anywhere === level} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{level}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">12. Seberapa penting ada aplikasi kelola antrean? <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Tidak penting', 'Kurang penting', 'Cukup penting', 'Penting', 'Sangat penting'].map((level) => (
+                  <label key={level} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="importance_queue_app" value={level} checked={formData.importance_queue_app === level} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{level}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">13. Apakah perlu notifikasi otomatis ke pelanggan? <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Tidak perlu', 'Opsional', 'Perlu'].map((need) => (
+                  <label key={need} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="want_auto_notification" value={need} checked={formData.want_auto_notification === need} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{need}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="border-b pb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <span className="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">4</span>
+              Promosi & Kemitraan
+            </h2>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">14. Apakah Anda bersedia ikut promosi kemitraan dengan aplikasi? <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Tidak bersedia', 'Mungkin', 'Ya, bersedia'].map((willing) => (
+                  <label key={willing} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="willing_partnership_promo" value={willing} checked={formData.willing_partnership_promo === willing} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{willing}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">
+                15. Fitur promosi mana yang paling penting? (pilih maksimal 2) <span className="text-red-500">*</span>
+              </label>
+              {formData.important_promo_features.length >= 2 && (
+                <p className="text-sm text-blue-600 mb-2">✓ Sudah {formData.important_promo_features.length}/2 terpilih</p>
+              )}
+              <div className="space-y-2">
+                {['Diskon untuk pelanggan baru', 'Cashback untuk pelanggan setia', 'Paket bundling (hemat)', 'Poin reward'].map((feature) => (
+                  <label key={feature} className={`flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition ${
+                    formData.important_promo_features.length >= 2 && !formData.important_promo_features.includes(feature) ? 'opacity-50' : ''
+                  }`}>
+                    <input type="checkbox" checked={formData.important_promo_features.includes(feature)}
+                      onChange={() => handleCheckboxChange('important_promo_features', feature)}
+                      disabled={formData.important_promo_features.length >= 2 && !formData.important_promo_features.includes(feature)}
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500 rounded" />
+                    <span className="text-gray-700">{feature}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="border-b pb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <span className="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">5</span>
+              Pendapat & Saran
+            </h2>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">16. Tantangan terbesar di bisnis barbershop menurut Anda? <span className="text-red-500">*</span></label>
+              <textarea name="biggest_challenge" value={formData.biggest_challenge} onChange={handleChange} required
+                rows={4} placeholder="Tulis tantangan terbesar yang Anda hadapi..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              ></textarea>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">17. Fitur wajib yang harus ada di aplikasi barbershop? <span className="text-red-500">*</span></label>
+              <textarea name="must_have_features" value={formData.must_have_features} onChange={handleChange} required
+                rows={4} placeholder="Sebutkan fitur-fitur yang menurut Anda wajib ada..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              ></textarea>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">18. Apakah Anda bersedia mencoba aplikasi Trimly saat diluncurkan? <span className="text-red-500">*</span></label>
+              <div className="space-y-2">
+                {['Tidak bersedia', 'Mungkin', 'Ya, bersedia'].map((willing) => (
+                  <label key={willing} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input type="radio" name="willing_try_trimly" value={willing} checked={formData.willing_try_trimly === willing} onChange={handleChange} required
+                      className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                    <span className="text-gray-700">{willing}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" disabled={isSubmitting}
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-lg font-semibold text-lg
+            hover:from-blue-600 hover:to-blue-700 transform hover:scale-[1.02] transition-all duration-200
+            shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
+            {isSubmitting ? '⏳ Mengirim...' : '📤 Kirim Kuesioner'}
+          </button>
+
+          {submitStatus === 'success' && (
+            <div className="mt-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-lg animate-fade-in">
+              <p className="font-semibold">✅ Terima kasih sudah mengisi!</p>
+              <p className="text-sm mt-1">Tanggapan Anda sangat berarti untuk pengembangan Trimly. 🙏</p>
+            </div>
+          )}
+
+          {submitStatus === 'error' && (
+            <div className="mt-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg animate-fade-in">
+              <p className="font-semibold">❌ Terjadi kesalahan</p>
+              <p className="text-sm mt-1">Mohon coba lagi atau hubungi tim kami jika masalah berlanjut.</p>
+            </div>
+          )}
         </form>
 
-        {/* Footer */}
-        <div className="text-center mt-8 text-white">
-          <p className="text-sm mb-2">
-            © 2025 Trimly - Startup Booking Barbershop Banyuwangi
-          </p>
-          <div className="flex justify-center gap-4 text-xs">
-            <a href="/" className="text-gray-300 hover:text-white transition">
-              Survey Pelanggan
-            </a>
-            <a href="/admin" className="text-gray-300 hover:text-white transition">
-              Admin Login
-            </a>
-          </div>
+        <div className="mt-8 text-center text-gray-500 text-sm">
+          <p>📊 Data akan digunakan untuk riset pengembangan Trimly</p>
+          <p className="mt-2">💡 <span className="font-semibold text-blue-600">Trimly</span> - Aplikasi booking barbershop yang bantu bisnis Anda tumbuh tanpa biaya bulanan</p>
         </div>
       </div>
     </div>
