@@ -50,34 +50,60 @@ export async function getCustomerResponses() {
   return await query(sql);
 }
 
-// Insert customer response
+// Insert customer response (V2 - Redesigned Survey)
 export async function insertCustomerResponse(data: any) {
   const sql = `
     INSERT INTO customer_responses 
-    (name, age, gender, domicile, frequency, price, problems, interest, 
-     features, booking_fee, payment_method, channel, review_importance, suggestions)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (age, gender, domicile, domicile_other, haircut_frequency, 
+     barbershop_choice, important_factors, when_full,
+     pain_wa_response, pain_time_confusion, pain_still_wait, 
+     pain_queue_overlap, pain_barber_forget, pain_unknown_barber,
+     interest_wait_anywhere, interest_choose_barber, interest_queue_time, interest_notification,
+     promo_types, will_download_for_promo, want_comparison_app,
+     wa_booking_issue, important_features, will_try_trimly)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
   
   // Map frontend field names to database columns
   const params = [
-    'Anonymous', // Default name since form doesn't collect it
+    // Bagian 1: Profil
     data.age || null,
     data.gender || null,
-    data.domicile || data.domicileOther || null,
+    data.domicile || null,
+    data.domicileOther || null,
     data.haircut_frequency || null,
-    data.price_range || null,
-    Array.isArray(data.problems) ? data.problems.join(', ') : (data.problems || null),
-    data.app_interest || null,
-    Array.isArray(data.needed_features) ? data.needed_features.join(', ') : (data.needed_features || null),
-    data.booking_fee || null,
-    data.payment_method || null,
-    data.booking_channel || null,
-    data.review_importance || null,
-    data.improvement_suggestion || data.favorite_barbershop || null
+    
+    // Bagian 2: Kebiasaan
+    data.barbershop_choice || null,
+    Array.isArray(data.important_factors) ? data.important_factors.join(', ') : (data.important_factors || null),
+    data.when_full || null,
+    
+    // Bagian 3: Pain Awareness (skala 1-5)
+    data.pain_wa_response || null,
+    data.pain_time_confusion || null,
+    data.pain_still_wait || null,
+    data.pain_queue_overlap || null,
+    data.pain_barber_forget || null,
+    data.pain_unknown_barber || null,
+    
+    // Bagian 4: Minat Booking Online
+    data.interest_wait_anywhere || null,
+    data.interest_choose_barber || null,
+    data.interest_queue_time || null,
+    data.interest_notification || null,
+    
+    // Bagian 5: Promo & Keuntungan
+    Array.isArray(data.promo_types) ? data.promo_types.join(', ') : (data.promo_types || null),
+    data.will_download_for_promo || null,
+    data.want_comparison_app || null,
+    
+    // Bagian 6: Pendapat
+    data.wa_booking_issue || null,
+    data.important_features || null,
+    data.will_try_trimly || null
   ];
   
-  console.log('💾 Saving to DB with params:', params);
+  console.log('💾 Saving customer survey V2 to DB with params:', params);
   
   return await query(sql, params);
 }
