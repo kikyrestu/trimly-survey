@@ -115,15 +115,6 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        {/* Info */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <p className="text-xs text-blue-800 text-center">
-            <strong>Default Login:</strong><br />
-            Username: <code className="bg-blue-200 px-2 py-1 rounded">admin</code><br />
-            Password: <code className="bg-blue-200 px-2 py-1 rounded">trimly2025</code>
-          </p>
-        </div>
-
         {/* Back to Survey */}
         <div className="mt-6 text-center">
           <a href="/" className="text-sm text-gray-600 hover:text-orange-500 transition">
