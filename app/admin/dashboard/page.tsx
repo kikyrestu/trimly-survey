@@ -624,11 +624,11 @@ export default function AdminDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* Booking Channel */}
+            {/* Interest in Choosing Barber */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Channel Booking yang Disukai</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Minat Pilih Barber Sendiri</h2>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={stats.channelData}>
+                <BarChart data={stats.interestChooseData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -638,11 +638,11 @@ export default function AdminDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* Review Importance */}
+            {/* Want Comparison App */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Pentingnya Review & Rating</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Mau Aplikasi Perbandingan Barbershop</h2>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={stats.reviewData}>
+                <BarChart data={stats.wantComparisonData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
