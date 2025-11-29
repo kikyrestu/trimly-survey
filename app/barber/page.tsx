@@ -28,6 +28,8 @@ export default function BarberSurvey() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -50,6 +52,8 @@ export default function BarberSurvey() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
     try {
       const response = await fetch('/api/submit-barber', {
         method: 'POST',
@@ -57,13 +61,16 @@ export default function BarberSurvey() {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
+        setSubmitStatus('success');
         setSubmitted(true);
       } else {
-        alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+        setSubmitStatus('error');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
