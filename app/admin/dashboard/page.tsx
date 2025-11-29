@@ -520,11 +520,11 @@ export default function AdminDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* Price Range */}
+            {/* Barbershop Choice */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Range Harga yang Dibayar</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Pilihan Barbershop</h2>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={stats.priceData}>
+                <BarChart data={stats.barbershopChoiceData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -534,11 +534,11 @@ export default function AdminDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* Problems */}
+            {/* Important Factors */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Permasalahan yang Dialami (Multiple)</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Faktor Penting Memilih Barbershop (Max 3)</h2>
               <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={stats.problemsData} layout="vertical">
+                <BarChart data={stats.importantFactorsData} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" />
                   <YAxis dataKey="name" type="category" width={200} />
@@ -586,11 +586,11 @@ export default function AdminDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* Booking Fee */}
+            {/* Will Try Trimly */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Kesediaan Bayar Biaya Booking</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Kesediaan Mencoba Trimly</h2>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={stats.bookingFeeData}>
+                <BarChart data={stats.willTryTrimlyData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -600,13 +600,13 @@ export default function AdminDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* Payment Method */}
+            {/* Promo Types */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Preferensi Metode Pembayaran</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Jenis Promo yang Diminati (Max 2)</h2>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={stats.paymentData}
+                    data={stats.promoTypesData}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
@@ -615,7 +615,7 @@ export default function AdminDashboard() {
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {stats.paymentData?.map((_: any, index: number) => (
+                    {stats.promoTypesData?.map((_: any, index: number) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -693,9 +693,9 @@ export default function AdminDashboard() {
               <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-500 text-sm font-semibold">Komisi Paling Diminati</p>
+                    <p className="text-gray-500 text-sm font-semibold">Minat Tertinggi (No Monthly Fee)</p>
                     <p className="text-lg font-bold text-gray-800 mt-2">
-                      {barberStats.commissionRateData?.[0]?.name || 'N/A'}
+                      {barberStats.interestNoFeeData?.[0]?.name || 'N/A'}
                     </p>
                   </div>
                   <BarChart3 className="w-12 h-12 text-purple-500" />
@@ -851,11 +851,11 @@ export default function AdminDashboard() {
                   </ResponsiveContainer>
                 </div>
 
-                {/* Commission Rate Preference */}
+                {/* Interest in No Monthly Fee App */}
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">Preferensi Rate Komisi</h2>
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Minat Aplikasi TANPA Biaya Bulanan ⭐</h2>
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={barberStats.commissionRateData}>
+                    <BarChart data={barberStats.interestNoFeeData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
                       <YAxis />
@@ -867,7 +867,7 @@ export default function AdminDashboard() {
 
                 {/* Partnership Willingness */}
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">Kesediaan Bermitra dengan Trimly</h2>
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Kesediaan Ikut Promosi Kemitraan</h2>
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={barberStats.partnershipData}>
                       <CartesianGrid strokeDasharray="3 3" />
@@ -875,6 +875,20 @@ export default function AdminDashboard() {
                       <YAxis />
                       <Tooltip />
                       <Bar dataKey="value" fill="#f59e0b" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Willing to Try Trimly */}
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Kesediaan Mencoba Trimly 🚀</h2>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={barberStats.willTryTrimlyData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="value" fill="#10b981" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
